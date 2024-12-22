@@ -57,6 +57,22 @@ This repository contains a comprehensive RESTful API for a task management syste
 - **npm** (v6 or later)
 - **Redis** (for caching)
 - Account credentials for a third-party notification service (e.g., Twilio, SendGrid, nodemailer
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/raghavkumar09/task-management-api.git
+   cd task-management-api
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables:
+   - Create a `.env` file in the project root.
    - Add the following:
      ```env
      PORT=3000
