@@ -20,11 +20,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6,
     },
-    roles: [{
+    role: {
         type: String,
-        enum: ['admin', 'manager', 'user'],
-        default: 'user',
-    }],
+        enum: ['admin', 'manager', 'user'], // Limited to these three roles
+        default: 'user' // Default role is 'user'
+    },
     team: {
         type: String,
         default: 'default'

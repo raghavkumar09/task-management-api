@@ -32,11 +32,14 @@ const protect = async (req, res, next) => {
 
 const authorize = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.user.roles[0])) {
-            return res.status(403).json({ message: 'Not authorized, insufficient rights' });
+        // Ensure user role exists and is valid
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({ 
+                message: 'Not authorized, insufficient rights' 
+            });
         }
-        next()
-    }
-}
+        next();
+    };
+};
 
 module.exports = { protect, authorize };
