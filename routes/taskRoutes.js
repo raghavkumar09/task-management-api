@@ -10,9 +10,9 @@ const {
 } = require('../controllers/taskController');
 
 router.post('/', protect, authorize('manager', 'admin'), createTask);
-router.get('/', protect, getAllTasks);
+router.get('/', protect, authorize('manager', 'admin'), getAllTasks);
 router.get('/:id', protect, getTaskById);
 router.put('/:id', protect, authorize('manager', 'admin'), updateTask);
-router.delete('/:id', protect, authorize('manager', 'admin'), deleteTask);
+router.delete('/:id', protect, authorize('admin'), deleteTask);
 
 module.exports = router;

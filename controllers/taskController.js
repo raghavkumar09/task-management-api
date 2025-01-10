@@ -1,10 +1,21 @@
 const Task = require('../models/Task');
+const User = require('../models/User');
+const mongoose = require('mongoose');
 
 // @desc Create a new task
 // @route POST /api/tasks
 // @access Private (manager and admin)
 const createTask = async (req, res) => {
     const { title, description, dueDate, priority, status, assignedTo } = req.body;
+
+    if (!title || !description || !dueDate || !priority || !status || !assignedTo) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Check if assignedTo is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
+        return res.status(400).json({ message: 'Invalid user ID, Please provide a valid user ID : assignedTo' });
+    }
 
     try {
         const task = new Task({
@@ -21,7 +32,7 @@ const createTask = async (req, res) => {
         res.status(201).json(createdTask);
 
     } catch (error) {
-        console.error(error);
+        console.log("Error on creating task", error);
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -32,7 +43,7 @@ const createTask = async (req, res) => {
 const getAllTasks = async (req, res) => {
     try {
         let filter = {};
-        if (req.user.roles[0] !== 'admin') {
+        if (req.user.role !== 'admin') {
             filter = { team: req.user.team };
         }
         const tasks = await Task.find(filter).populate('assignedTo', 'username email');
@@ -53,7 +64,7 @@ const getTaskById = async (req, res) => {
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
-        if (req.user.roles[0] !== 'admin' && task.team !== req.user.team) {
+        if (req.user.role !== 'admin' && task.team !== req.user.team) {
             return res.status(403).json({ message: 'Not authorized, task not assigned to user team' });
         }
         res.status(200).json(task);
@@ -74,7 +85,7 @@ const updateTask = async (req, res) => {
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
-        if (req.user.roles[0] !== 'admin' && task.team !== req.user.team) {
+        if (req.user.role !== 'admin' && task.team !== req.user.team) {
             return res.status(403).json({ message: 'Not authorized, task not assigned to user team' });
         }
 
@@ -105,7 +116,7 @@ const deleteTask = async (req, res) => {
             return res.status(404).json({ message: 'Task not found' });
         }
 
-        if (req.user.roles[0] !== 'admin' && task.team !== req.user.team) {
+        if (req.user.role !== 'admin' && task.team !== req.user.team) {
             return res.status(403).json({ message: 'Not authorized, task not assigned to user team' });
         }
 
